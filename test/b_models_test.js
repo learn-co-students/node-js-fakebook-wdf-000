@@ -92,54 +92,54 @@ describe('Models', () => {
       });
   });
 
-  it('User model can record a follower', (done) => {
-    const saveUsr = (data) => {
-      return User.forge().save(data, {transacting: transaction});
-    };
-    Promise.all([
-      saveUsr(mockUser),
-      saveUsr(anotherMockUser),
-      saveUsr(aThirdMockUser)
-    ])
-      .then((results) => {
-        let usr1 = results[0];
-        let usr2 = results[1];
-        let usr3 = results[2];
-        return usr1.followers().attach(
-          [usr2.id, usr3.id],
-          {transacting: transaction}
-        );
-      })
-      .then((usr) => {
-        return User
-          .forge({username: mockUser.username})
-          .fetch({
-            withRelated: ['followers'],
-            transacting: transaction
-          });
-      })
-      .then((usr) => {
-        expect(usr.related('followers').length, 'to be', 2);
-        expect(usr.related('followers').pluck('name'), 'to contain',
-          anotherMockUser.name,
-          aThirdMockUser.name
-        );
-        return User
-          .forge({username: anotherMockUser})
-          .fetch({
-            withRelated: ['following'],
-            transacting: transaction
-          });
-      })
-      .then((usr) => {
-        expect(usr.related('following').length, 'to be', 1);
-        expect(usr.related('following').pluck('name'), 'to contain',
-          mockUser.name
-        );
-        done();
-      })
-      .catch((err) => { done(err); });
-   });
+  // it('User model can record a follower', (done) => {
+  //   const saveUsr = (data) => {
+  //     return User.forge().save(data, {transacting: transaction});
+  //   };
+  //   Promise.all([
+  //     saveUsr(mockUser),
+  //     saveUsr(anotherMockUser),
+  //     saveUsr(aThirdMockUser)
+  //   ])
+  //     .then((results) => {
+  //       let usr1 = results[0];
+  //       let usr2 = results[1];
+  //       let usr3 = results[2];
+  //       return usr1.followers().attach(
+  //         [usr2.id, usr3.id],
+  //         {transacting: transaction}
+  //       );
+  //     })
+  //     .then((usr) => {
+  //       return User
+  //         .forge({username: mockUser.username})
+  //         .fetch({
+  //           withRelated: ['followers'],
+  //           transacting: transaction
+  //         });
+  //     })
+  //     .then((usr) => {
+  //       expect(usr.related('followers').length, 'to be', 2);
+  //       expect(usr.related('followers').pluck('name'), 'to contain',
+  //         anotherMockUser.name,
+  //         aThirdMockUser.name
+  //       );
+  //       return User
+  //         .forge({username: anotherMockUser})
+  //         .fetch({
+  //           withRelated: ['following'],
+  //           transacting: transaction
+  //         });
+  //     })
+  //     .then((usr) => {
+  //       expect(usr.related('following').length, 'to be', 1);
+  //       expect(usr.related('following').pluck('name'), 'to contain',
+  //         mockUser.name
+  //       );
+  //       done();
+  //     })
+  //     .catch((err) => { done(err); });
+  //  });
 
   it('Posts model exists', (done) => {
     expect(Posts, 'to be defined');
